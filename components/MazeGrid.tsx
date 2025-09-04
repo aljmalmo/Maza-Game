@@ -1,0 +1,99 @@
+
+import React from 'react';
+import { Maze, Point } from '../types';
+
+interface MazeGridProps {
+  maze: Maze;
+  playerPos: Point;
+  showSolution: boolean;
+  solutionPath: Point[];
+}
+
+const CELL_SIZE_BASE = 2.5; // in rem for large screens
+const CELL_SIZE_SMALL = 22; // in pixels for smaller screens to ensure fit
+
+const MazeGrid: React.FC<MazeGridProps> = ({ maze, playerPos, showSolution, solutionPath }) => {
+  const height = maze.length;
+  const width = maze[0].length;
+  
+  const isSolutionPath = (r: number, c: number) => {
+    return solutionPath.some(p => p.r === r && p.c === c);
+  }
+
+  const cellSize = `min(${CELL_SIZE_BASE}rem, ${CELL_SIZE_SMALL}px)`;
+  const mazeWidth = `calc(${width} * ${cellSize})`;
+  const mazeHeight = `calc(${height} * ${cellSize})`;
+
+  return (
+    <div
+      className="relative bg-slate-700 grid border-2 border-cyan-500 shadow-lg shadow-cyan-500/20"
+      style={{
+        gridTemplateColumns: `repeat(${width}, 1fr)`,
+        gridTemplateRows: `repeat(${height}, 1fr)`,
+        width: mazeWidth,
+        height: mazeHeight,
+      }}
+    >
+      {maze.flat().map((cell) => (
+        <div
+          key={`${cell.r}-${cell.c}`}
+          className="relative"
+          style={{
+            borderTop: cell.walls.top ? '2px solid #0891b2' : 'none',
+            borderRight: cell.walls.right ? '2px solid #0891b2' : 'none',
+            borderBottom: cell.walls.bottom ? '2px solid #0891b2' : 'none',
+            borderLeft: cell.walls.left ? '2px solid #0891b2' : 'none',
+            width: cellSize,
+            height: cellSize,
+          }}
+        >
+          {showSolution && isSolutionPath(cell.r, cell.c) && (
+             <div className="absolute inset-0 bg-purple-500 opacity-30"></div>
+          )}
+        </div>
+      ))}
+
+      {/* Start Point */}
+      <div
+        className="absolute flex items-center justify-center text-xs font-bold text-green-300 bg-green-500/30 rounded-full"
+        style={{
+          width: `calc(${cellSize} * 0.6)`,
+          height: `calc(${cellSize} * 0.6)`,
+          top: `calc(${cellSize} * 0.2)`,
+          left: `calc(${cellSize} * 0.2)`,
+          transition: 'all 0.2s ease-in-out',
+        }}
+      >
+        S
+      </div>
+
+      {/* End Point */}
+      <div
+        className="absolute flex items-center justify-center text-xs font-bold text-red-300 bg-red-500/30 rounded-full"
+        style={{
+          width: `calc(${cellSize} * 0.6)`,
+          height: `calc(${cellSize} * 0.6)`,
+          top: `calc(${cellSize} * ${(height - 1) + 0.2})`,
+          left: `calc(${cellSize} * ${(width - 1) + 0.2})`,
+          transition: 'all 0.2s ease-in-out',
+        }}
+      >
+        E
+      </div>
+
+      {/* Player */}
+      <div
+        className="absolute bg-yellow-400 rounded-full shadow-lg shadow-yellow-400/50"
+        style={{
+          width: `calc(${cellSize} * 0.5)`,
+          height: `calc(${cellSize} * 0.5)`,
+          top: `calc(${cellSize} * ${playerPos.r + 0.25})`,
+          left: `calc(${cellSize} * ${playerPos.c + 0.25})`,
+          transition: 'top 0.1s linear, left 0.1s linear',
+        }}
+      />
+    </div>
+  );
+};
+
+export default React.memo(MazeGrid);

@@ -1,0 +1,5 @@
+{
+  "name": "Copy of React Maze Game",
+  "description": "A fully playable, lightweight maze game that generates a random maze for each new game. The game features multiple difficulty levels, a timer, and a solution-finding hint system, all wrapped in a sleek, modern, and responsive UI.",
+  "requestFramePermissions": []
+}

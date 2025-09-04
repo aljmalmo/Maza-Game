@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Maze, Point } from '../types';
 
@@ -9,9 +8,6 @@ interface MazeGridProps {
   solutionPath: Point[];
 }
 
-const CELL_SIZE_BASE = 2.5; // in rem for large screens
-const CELL_SIZE_SMALL = 22; // in pixels for smaller screens to ensure fit
-
 const MazeGrid: React.FC<MazeGridProps> = ({ maze, playerPos, showSolution, solutionPath }) => {
   const height = maze.length;
   const width = maze[0].length;
@@ -20,18 +16,14 @@ const MazeGrid: React.FC<MazeGridProps> = ({ maze, playerPos, showSolution, solu
     return solutionPath.some(p => p.r === r && p.c === c);
   }
 
-  const cellSize = `min(${CELL_SIZE_BASE}rem, ${CELL_SIZE_SMALL}px)`;
-  const mazeWidth = `calc(${width} * ${cellSize})`;
-  const mazeHeight = `calc(${height} * ${cellSize})`;
-
   return (
     <div
       className="relative bg-slate-700 grid border-2 border-cyan-500 shadow-lg shadow-cyan-500/20"
       style={{
         gridTemplateColumns: `repeat(${width}, 1fr)`,
         gridTemplateRows: `repeat(${height}, 1fr)`,
-        width: mazeWidth,
-        height: mazeHeight,
+        width: 'min(90vw, 90vh, 700px)',
+        aspectRatio: `${width} / ${height}`,
       }}
     >
       {maze.flat().map((cell) => (
@@ -43,8 +35,6 @@ const MazeGrid: React.FC<MazeGridProps> = ({ maze, playerPos, showSolution, solu
             borderRight: cell.walls.right ? '2px solid #0891b2' : 'none',
             borderBottom: cell.walls.bottom ? '2px solid #0891b2' : 'none',
             borderLeft: cell.walls.left ? '2px solid #0891b2' : 'none',
-            width: cellSize,
-            height: cellSize,
           }}
         >
           {showSolution && isSolutionPath(cell.r, cell.c) && (
@@ -57,11 +47,10 @@ const MazeGrid: React.FC<MazeGridProps> = ({ maze, playerPos, showSolution, solu
       <div
         className="absolute flex items-center justify-center text-xs font-bold text-green-300 bg-green-500/30 rounded-full"
         style={{
-          width: `calc(${cellSize} * 0.6)`,
-          height: `calc(${cellSize} * 0.6)`,
-          top: `calc(${cellSize} * 0.2)`,
-          left: `calc(${cellSize} * 0.2)`,
-          transition: 'all 0.2s ease-in-out',
+          width: `calc(100% / ${width} * 0.6)`,
+          height: `calc(100% / ${height} * 0.6)`,
+          top: `calc(100% / ${height} * 0.2)`,
+          left: `calc(100% / ${width} * 0.2)`,
         }}
       >
         S
@@ -71,11 +60,10 @@ const MazeGrid: React.FC<MazeGridProps> = ({ maze, playerPos, showSolution, solu
       <div
         className="absolute flex items-center justify-center text-xs font-bold text-red-300 bg-red-500/30 rounded-full"
         style={{
-          width: `calc(${cellSize} * 0.6)`,
-          height: `calc(${cellSize} * 0.6)`,
-          top: `calc(${cellSize} * ${(height - 1) + 0.2})`,
-          left: `calc(${cellSize} * ${(width - 1) + 0.2})`,
-          transition: 'all 0.2s ease-in-out',
+          width: `calc(100% / ${width} * 0.6)`,
+          height: `calc(100% / ${height} * 0.6)`,
+          top: `calc(100% / ${height} * (${height - 1} + 0.2))`,
+          left: `calc(100% / ${width} * (${width - 1} + 0.2))`,
         }}
       >
         E
@@ -85,10 +73,10 @@ const MazeGrid: React.FC<MazeGridProps> = ({ maze, playerPos, showSolution, solu
       <div
         className="absolute bg-yellow-400 rounded-full shadow-lg shadow-yellow-400/50"
         style={{
-          width: `calc(${cellSize} * 0.5)`,
-          height: `calc(${cellSize} * 0.5)`,
-          top: `calc(${cellSize} * ${playerPos.r + 0.25})`,
-          left: `calc(${cellSize} * ${playerPos.c + 0.25})`,
+          width: `calc(100% / ${width} * 0.5)`,
+          height: `calc(100% / ${height} * 0.5)`,
+          top: `calc(100% / ${height} * ${playerPos.r + 0.25})`,
+          left: `calc(100% / ${width} * ${playerPos.c + 0.25})`,
           transition: 'top 0.1s linear, left 0.1s linear',
         }}
       />
